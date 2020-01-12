@@ -1,0 +1,76 @@
+.mui-bar .mui-title {
+	left: 10px;
+}
+
+input[type="text"] {
+	margin-bottom: 0px;
+	margin-top: 5px;
+	height: 40px;
+	line-height: 40px;
+	border: 0px;
+}
+
+.mui-table-view-cell {
+	padding: 0px;
+}
+
+.mui-table-view {
+	background-color: inherit;
+}
+
+.message_box_left {
+	float: left;
+	padding: 10px 5px;
+	max-width: 150px;
+	border-radius: 10px;
+}
+
+.message_label {
+	display: inline-block;
+	line-height: 30px;
+	vertical-align: middle;
+	background-color: white;
+	overflow-wrap: break-word;
+	max-width: 140px;
+	border-radius: 5px;
+	padding: 5px;
+	font-size: 15px;
+}
+.message_img{
+	max-height: 200px;
+	max-width: 140px;
+}
+.message_img_emoge{
+	height:30px;
+	width:30px;
+	border-radius: 15px;
+}
+
+.mui-table-view:after {
+	transform: scaleY(0) !important;
+}
+
+.mui-table-view-cell:after {
+	transform: scaleY(0) !important;
+}
+
+.left_img {
+	margin-left: 10px;
+	float: left;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.right_img {
+	margin-right: 10px;
+	float: right;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.message_box_right {
+	float: right;
+	padding: 10px 5px;
+	max-width: 150px;
+	border-radius: 10px;
+}

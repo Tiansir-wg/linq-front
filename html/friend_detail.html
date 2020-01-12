@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="../css/common.css" rel="stylesheet" />
+		<link href="../css/iconfont.css" rel="stylesheet" />
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav bgcolor_red">
+			<h1 class="mui-title fontcolor_white" style="text-align: left;">
+				<span class="mui-action-back mui-icon mui-icon-arrowleft"></span>
+				<label id="nickname"></label>
+			</h1>
+			<span class="mui-icon iconfont" style="color:white;float: right;right:0px;" id="shengluehao">&#xe637;</span>
+			<div style="clear:both;"></div>
+		</header>
+
+		<div class="mui-content">
+			<div class="mui-card" style="margin:0px;">
+				<!--内容区-->
+				<div class="mui-card-content" style="padding:0px 10px;">
+					<div style="display: flex;">
+						<div style="width:30%;text-align:center;">
+							<img id="img" src="" style="height:60px;width:60px; box-shadow: 1px 1px 5px #000000;margin:20px;border:0px;" />
+						</div>
+						<div style="width:70%;padding-top:15px;padding-left: 20px;">
+							<h5 style="font-size:20px;" id="nickname"></h5>
+							<h5 style="display: inline-block;margin-top: 10px;">LinQ号:&nbsp;
+								<h6 style="display: inline-block;" id="username"></h6>
+							</h5>
+							<br>
+							<h5 style="display: inline-block;margin-top: 10px;;">
+								地区:&nbsp;
+								<h6 style="display: inline-block;" id="address"></h6>
+							</h5>
+
+						</div>
+					</div>
+
+
+
+				</div>
+			</div>
+			<ul class="mui-table-view" style="margin-bottom: 10px;">
+				<li class="mui-table-view-cell padding_top_bottom_15">
+					<a class="mui-navigate-right">设置备注和标签</a>
+				</li>
+			</ul>
+
+			<ul class="mui-table-view" style="margin-bottom: 10px;">
+				<li class="mui-table-view-cell padding_top_bottom_15">
+					<a class="mui-navigate-right">朋友圈</a>
+				</li>
+			</ul>
+
+			<ul class="mui-table-view" style="margin-bottom: 10px;" id="sendMessageUl">
+				<li class="mui-table-view-cell padding_top_bottom_15" style="text-align: center;">
+					<a id="sendMessageBtn">
+						<span class="mui-icon mui-icon-chatbubble"></span>
+						发消息
+					</a>
+				</li>
+			</ul>
+		</div>
+
+		<script src="../js/mui.js"></script>
+		<script src="../js/util.js"></script>
+		<script>
+			mui.init();
+
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+
+				var username = self.username;
+
+				var nickname = self.nickname;
+
+				mui.ajax(app.baseUrl() + "getUserInfo?username=" + username, {
+					data: {},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					success: function(data) {
+						//服务器返回响应，根据响应结果，分析是否登录成功；
+						var contact = data.data;
+						document.getElementById("nickname").innerHTML = contact.nickname;
+						document.getElementById("username").innerHTML = contact.username;
+						document.getElementById("address").innerHTML = contact.address;
+						document.getElementById("img").src = app.imgServerUrl + contact.faceimg_sm;
+
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						app.showToast("出了一点问题", "close-circle");
+					}
+				});
+
+				friend_operation_screen(username);
+
+				sendMessage(username, nickname,document.getElementById("img").src);
+
+			})
+
+			function friend_operation_screen(username) {
+				mui("header").on("tap", "#shengluehao", function() {
+					var action_sheet = plus.webview.create("action_sheet.html", "action_sheet", {
+						background: 'transparent',
+						zindex: 200
+					});
+					action_sheet.show("fade-in", 300);
+
+				})
+			}
+
+			function sendMessage(username, nickname,imgSm) {
+
+				document.getElementById("sendMessageBtn").addEventListener("tap", function() {
+					mui.openWindow({
+						url: "chatting.html",
+						id: "chatting-" + username,
+						extras: {
+							friendUserId: username,
+							friendNickname: nickname,
+							friendFaceImage: imgSm
+						}
+
+					});
+				})
+			}
+		</script>
+	</body>
+
+</html>

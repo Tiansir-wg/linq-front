@@ -1,0 +1,25 @@
+.bgcolor_red{
+	background-color: #c14f4f;
+}
+.fontcolor_white{
+	color:white;
+}
+.mui-bar-tab .mui-tab-item.mui-active{
+	color:#c14f4f;
+}
+.mui-content > .mui-table-view:first-child{
+	margin-top: 0px;
+}
+
+.mui-bar .mui-title {
+	left: 10px;
+}
+.padding_top_bottom_15{
+	padding-bottom: 15px;
+	padding-top: 15px;
+}
+.padding_top_bottom_10{
+	padding-bottom: 10px;
+	padding-top: 10px;
+}
+* { touch-action: none; }

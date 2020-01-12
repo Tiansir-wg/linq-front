@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="../css/common.css" rel="stylesheet" />
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav bgcolor_red">
+			<h1 class="mui-title fontcolor_white" style="text-align: left;">
+				<span class="mui-action-back mui-icon mui-icon-arrowleft"></span>
+			</h1>
+		</header>
+
+		<div class="mui-content">
+			<div class="mui-card-content" style="padding:0px 10px;background-color: white;;">
+				<div style="height:100px;display: flex;" id="selfinfo_card">
+					<div style="width:20%;height:100%;text-align:center;padding-top: 3%;">
+						<img src="" id="myfaceimg" style="height:65px;width:65px;box-shadow: 1px 1px 5px #000000;" />
+					</div>
+					<div style="width:60%;height:100%;padding-top:15px;padding-left: 20px;">
+						<h5 style="font-size:20px;" id="nickname"></h5>
+						<h6 id="address" style="margin-top:10px;">
+						</h6>
+					</div>
+					<div style="width:20%;height:100%;padding-top:50px;">
+					</div>
+				</div>
+			</div>
+
+			<div class="mui-input-row" style="margin: 10px 5px;">
+				<textarea id="verifyBox" rows="5" placeholder="请输入验证消息" class="mui-input-clear"></textarea>
+			</div>
+			<ul class="mui-table-view" style="margin-top: 10px;">
+				<li class="mui-table-view-cell">
+					<a href="javascript:" style="text-align: center;padding:10px auto;" id="addFriendBtn">添加到通讯录</a>
+				</li>
+
+			</ul>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/util.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function() {
+				var thisView = plus.webview.currentWebview();
+
+				var userInfo = thisView.userInfo;
+
+
+				if (app.isNotNull(userInfo)) {
+					app.get("nickname").innerHTML = userInfo.nickname;
+					app.get("myfaceimg").src = app.imgServerUrl + userInfo.faceimg_sm;
+					app.get("address").innerHTML = userInfo.address;
+
+					app.get("addFriendBtn").addEventListener("tap", function() {
+
+						plus.nativeUI.showWaiting("请求中...");
+
+						// 验证信息
+						var verifyMsg = app.get("verifyBox").value;
+
+						mui.ajax(app.baseUrl() + "addFriend?username=" + app.getGlobalUserInfo().username + "&friendUsername=" +
+							userInfo.username + "&verifyMsg=" + verifyMsg, {
+								data: {},
+								crossDomain: true,
+								dataType: 'json', //服务器返回json格式数据
+								type: 'post', //HTTP请求类型
+								timeout: 3000, //超时时间设置为10秒；
+								headers: {
+									'Content-Type': 'application/json'
+								},
+								success: function(data) {
+
+									plus.nativeUI.closeToast();
+
+
+									
+									var selfPage = plus.webview.currentWebview();
+
+									var openerPage = selfPage.opener();
+
+									selfPage.close();
+
+									openerPage.show();
+
+									if (data.code == 200) {
+										app.showToast("好友请求成功，等待对方同意~~");
+									} else {
+										app.showToast("好友请求失败," + data.msg);
+									}
+
+
+								},
+								error: function() {
+									//alert()
+									plus.nativeUI.closeToast();
+
+									app.showToast("出了一点儿小问题~~", "close-circle");
+								}
+							}
+						);
+					})
+				} else {
+					app.showToast("页面出现了一点小问题~~", "error");
+				}
+			})
+		</script>
+	</body>
+
+</html>

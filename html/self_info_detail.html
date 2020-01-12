@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="../css/common.css" rel="stylesheet" />
+		<link href="../css/iconfont.css" rel="stylesheet" />
+
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav bgcolor_red">
+			<h1 class="mui-title fontcolor_white" style="text-align: left;">
+				<span class="mui-action-back mui-icon mui-icon-arrowleft"></span>
+			</h1>
+		</header>
+
+		<div class="mui-content">
+
+			<ul class="mui-table-view" style="margin-bottom: 10px;">
+				<li class="mui-table-view-cell" id="myfaceimg">
+					<a class="mui-navigate-right">
+						<label style="height:40px;line-height: 40px;">图像</label>
+						<img src="" style="height:45px;width:45px;float:right;margin-right:40px;" id="user_face_sm_img" />
+					</a>
+				</li>
+
+				<li class="mui-table-view-cell padding_top_bottom_15">
+					<a class="mui-navigate-right">昵称
+						<label style="float: right;margin-right: 40px;" id="nickname"></label>
+					</a>
+				</li>
+
+				<li class="mui-table-view-cell padding_top_bottom_15">
+					<a class="mui-navigate-right">微信号
+						<label style="float: right;margin-right: 40px;" id="username"></label>
+					</a>
+				</li>
+
+				<li class="mui-table-view-cell padding_top_bottom_15" id="erweima">
+					<a class="mui-navigate-right">二维码名片
+						<span style="float: right;margin-right: 40px;" class="mui-icon iconfont icon-erweima"></span>
+					</a>
+				</li>
+			</ul>
+		</div>
+
+		<script src="../js/mui.js"></script>
+		<script src="../js/util.js"></script>
+		<script>
+			mui.init();
+
+			mui.plusReady(function() {
+
+				// 填充内容
+				var img = document.getElementById("user_face_sm_img");
+
+				var username = document.getElementById("username");
+
+				var nickname = document.getElementById("nickname");
+
+				//var erweima = document.getElementById("erweima");
+
+				var userInfo = app.getGlobalUserInfo();
+
+				// alert(userInfo.userFaceSmImg)
+
+				img.src = app.imgServerUrl + userInfo.faceimg_sm;
+				
+
+				username.innerHTML = userInfo.username;
+
+				nickname.innerHTML = userInfo.nickname;
+
+				document.getElementById("myfaceimg").addEventListener("tap", function() {
+					mui.openWindow("my_img_bg.html", "my_img_bg");
+				})
+
+				document.getElementById("erweima").addEventListener("tap", function() {
+					mui.openWindow("my_qrcode.html", "my_qrcode");
+				})
+
+				document.getElementById("nickname").addEventListener("tap", function() {
+					mui.openWindow("update_nickname.html", "update_nickname");
+				})
+			})
+		</script>
+
+	</body>
+
+</html>

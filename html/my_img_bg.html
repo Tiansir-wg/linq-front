@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="../css/common.css" rel="stylesheet" />
+		<link href="../css/iconfont.css" rel="stylesheet" />
+
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav bgcolor_red">
+			<h1 class="mui-title fontcolor_white" style="text-align: left;">
+				<span class="mui-action-back mui-icon mui-icon-arrowleft"></span>
+			</h1>
+			<h1 class="mui-title fontcolor_white">
+				我的图像
+			</h1>
+			<a href="#sheet_img">
+				<span class="mui-icon iconfont" style="color:white;float: right;right:0px;" id="shengluehao">&#xe637;</span>
+			</a>
+		</header>
+
+		<div class="mui-content">
+			<img src="" alt="暂时还没有图像哦~~" id="user_face_bg_img" />
+		</div>
+
+		<div id="sheet_img" class="mui-popover mui-popover-bottom mui-popover-action ">
+			<!-- 可选择菜单 -->
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#" id="choose_photo">选择照片</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a href="#" id="save_photo">保存照片</a>
+				</li>
+			</ul>
+			<!-- 取消菜单 -->
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#sheet_img"><b>取消</b></a>
+				</li>
+			</ul>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/util.js"></script>
+		<script>
+			mui.init();
+
+			mui.plusReady(function() {
+
+				// 填充信息区域
+				var userInfo = app.getGlobalUserInfo();
+
+				if (userInfo != null && app.isNotNull(userInfo.faceimg_bg)) {
+
+					//alert(userInfo.user_face_bg_img);
+					document.getElementById("user_face_bg_img").src = app.imgServerUrl + userInfo.faceimg_bg;
+					console.log(app.imgServerUrl + userInfo.faceimg_bg);
+				} else {
+					document.getElementById("user_face_bg_img").src = "../images/pic.jpeg";
+				}
+
+				// 获取手机可视区域的宽度,用于将图片显示成为正方形区域
+				var clientWidth = document.body.clientWidth;
+				document.getElementById("user_face_bg_img").width = clientWidth;
+				document.getElementById("user_face_bg_img").height = clientWidth;
+
+				// 为保存照片按钮绑定事件
+				document.getElementById("save_photo").addEventListener("tap", function() {
+					
+					var userInfo = app.getGlobalUserInfo();
+
+					if (userInfo != null) {
+						var imgBig = userInfo.faceimg_bg;
+						
+						plus.nativeUI.showWaiting("下载中，请稍后...");
+						
+						//console.log(imgBig);
+
+						var task = plus.downloader.createDownload(app.imgServerUrl + imgBig, {
+
+						}, function(downloadFile, status) {
+							plus.nativeUI.closeWaiting();
+							if (status == 200) {
+								// 下载下来的只是一个临时文件，所以需要保存到相册
+								var tempFile = downloadFile.filename;
+
+								plus.gallery.save(tempFile, function() {
+									app.showToast("下载成功", "success");
+								})
+
+
+
+							} else {
+								console.log("下载失败");
+								app.showToast("下载失败", "error");
+							}
+						});
+						// 启动任务
+						task.start();
+					}
+				})
+
+				// 为选择照片按钮绑定事件
+				document.getElementById("choose_photo").addEventListener("tap", function() {
+					mui.openWindow("../plugin/v3.1.6/myface-uploader.html", "myface-uploader");
+					mui('#sheet_img').popover('toggle');
+				})
+
+			})
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="../css/common.css" rel="stylesheet" />
+		<link href="../css/action_sheet.css" rel="stylesheet" />
+		<style>
+			html {
+				width: 100%;
+				height: 100%;
+			}
+
+			body {
+				height: 100%;
+				background-color: transparent;
+			}
+
+			.mui-popover .mui-popover-arrow {
+				left: auto;
+				right: 10px !important;
+			}
+
+			.mui-popover {
+				display: block;
+				width: auto;
+				opacity: 1;
+				text-align: center;
+			}
+
+			.mui-table-view-cell>a:not(.mui-btn) {
+				color: #000000;
+			}
+
+			.mui-popover .mui-popover-arrow:after {
+				background-color: #FFFFFF;
+			}
+
+			.mui-popover.mui-popover-action .mui-table-view .mui-table-view-cell:after {
+				transform: scaleY(0);
+			}
+		</style>
+	</head>
+
+	<body>
+		<a style="display: block;height: 100%; background-color: black;opacity: 0.4;"></a>
+		<div id="action_sheet" class="mui-popover mui-popover-bottom mui-popover-action " style="bottom: 122px;">
+			<!-- 可选择菜单 -->
+			<ul class="mui-table-view" style="top: -4px;right: 0;background-color: #FFFFFF;">
+				<li class="mui-table-view-cell padding_top_bottom_15" style="text-align: left;padding-left:20px;">
+					<a href="#">
+						<span class="mui-icon mui-icon-compose"></span>
+						设置备注
+					</a>
+				</li>
+				<li class="mui-table-view-cell padding_top_bottom_15" style="text-align: left;padding-left:20px;">
+					<a href="#">
+						<span class="mui-icon mui-icon-trash"></span>
+						删除
+					</a>
+				</li>
+			</ul>
+		</div>
+
+		<script src="../js/mui.js"></script>
+		<script>
+			mui.init();
+
+			mui.plusReady(function() {
+				ws = plus.webview.currentWebview();
+				ws.setStyle({
+					mask: "none"
+				});
+				window.addEventListener("tap", function() {
+					ws.hide();
+				});
+				window.addEventListener("dragstart", function() {
+					ws.hide();
+				});
+
+			});
+		</script>
+	</body>
+
+</html>

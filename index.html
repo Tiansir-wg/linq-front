@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/mui.min.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/common.css" rel="stylesheet" />
+	</head>
+	<body>
+		<!-- 顶部 -->
+		<header class="mui-bar mui-bar-nav bgcolor_red">
+			<h1 class="mui-title fontcolor_white">LinQ</h1>
+			<span class="mui-icon mui-icon-search" style="color:white;float: right;right:40px;"></span>
+			<span class="mui-icon mui-icon-plusempty" id="menu" style="color:white;float: right;right:-20px;"></span>
+			<div style="clear:both;"></div>
+		</header>
+
+		<!-- 底部导航栏 -->
+		<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active" tabindex="0">
+				<span class="mui-icon mui-icon-chat"></span>
+				<span class="mui-tab-label">LinQ</span>
+			</a>
+			<a class="mui-tab-item" tabindex="1">
+				<span class="mui-icon mui-icon-contact"></span>
+				<span class="mui-tab-label">通讯录</span>
+			</a>
+			<a class="mui-tab-item" tabindex="2">
+				<span class="mui-icon mui-icon-navigate"></span>
+				<span class="mui-tab-label">发现</span>
+			</a>
+			<a class="mui-tab-item" tabindex="3">
+				<span class="mui-icon mui-icon-person"></"></span>
+				<span class="mui-tab-label">我的</span>
+			</a>
+		</nav>
+		<script src="js/util.js" type="text/javascript"></script>
+
+		<script type="text/javascript">
+			mui.init();
+
+			// 定义页面对象数组
+			var tabs_array = [{
+					pageId: "chatlist",
+					pageUrl: "html/chatlist.html"
+				},
+				{
+					pageId: "contacts_tabcontent",
+					pageUrl: "html/contacts_tabcontent.html"
+				},
+				{
+					pageId: "discover_tabcontent",
+					pageUrl: "html/discover_tabcontent.html"
+				},
+				{
+					pageId: "mine_tabcontent",
+					pageUrl: "html/mine_tabcontent.html"
+				}
+			];
+
+			// tab页面初始化，为主界面添加tab
+			function tabsInit(tabs) {
+
+				// 样式
+				var style = {
+					top: "44px",
+					bottom: "50px"
+				};
+
+
+				// 获取主界面webview对象
+				var indexWebView = plus.webview.currentWebview();
+
+				// 为主界面添加四个附加界面
+				for (var i = 0; i < tabs.length; i++) {
+
+					// 创建附加界面
+					var extraView = plus.webview.create(tabs[i].pageUrl, tabs[i].pageId, style);
+
+					//  默认隐藏
+					extraView.hide();
+
+					// 添加为主界面的子界面 
+					indexWebView.append(extraView);
+				}
+
+				// 显示主界面
+				plus.webview.show(tabs[0].pageId);
+			}
+
+			//
+
+
+			// 为每个 tab 添加触摸事件绑定
+			function addTapEvent(tabs) {
+				mui('.mui-bar-tab').on('tap', 'a', function() {
+
+					// 获取添加的 tabIndex 属性
+					var tabindex = this.getAttribute("tabindex");
+
+					// 显示当前 webview,隐藏其他 webview
+					plus.webview.show(tabs[tabindex].pageId, "fade-in", 200);
+
+					for (var i = 0; i < tabs.length; i++) {
+						if (tabindex != i) {
+							plus.webview.hide(tabs[i].pageId, "fade-out", 200);
+						}
+					}
+
+				})
+			}
+			// 移动设备就绪完毕之后进行的操作,plus代表手机设备 
+			mui.plusReady(function() {
+
+				// 重新 mui 的返回方法，防止主界面跳转到登录界面
+				mui.back = function() {
+					return false;
+				}
+
+				// 设置沉浸式状态栏
+				app.statusBarInit("#c14f4f")
+
+				// 为主界面添加选项卡内容
+				tabsInit(tabs_array);
+
+				// 为选项卡添加触摸事件
+				addTapEvent(tabs_array);
+
+				bindWindow();
+
+			})
+
+			/**
+			 * 为菜单按钮绑定触摸事件，触摸式弹出窗口
+			 */
+			function bindWindow() {
+				mui(".mui-bar").on('tap', '#menu', function() {
+					var menuWebview = plus.webview.create("html/menu.html", "html/menu.html", {
+						background: 'transparent',
+						zindex: 200
+					});
+					menuWebview.show("fade-in", 300);
+				})
+			}
+		</script>
+
+	</body>
+</html>

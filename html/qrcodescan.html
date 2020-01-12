@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/common.css" rel="stylesheet" />
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/util.js"></script>
+		<style type="text/css">
+			#bcid {
+				position: absolute;
+				top: 44px;
+				background: #000000;
+			}
+
+			html,
+			body,
+			div {
+				height: 100%;
+				width: 100%;
+			}
+
+			.fbt {
+				color: #0E76E1;
+				width: 50%;
+				background-color: #ffffff;
+				float: left;
+				line-height: 44px;
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav bgcolor_red">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:white;"></a>
+			<h1 class="mui-title" style="color: white;">扫一下添加好友</h1>
+			<span class="mui-icon mui-icon-spinner-cycle mui-spin mui-pull-right" style="color: white;" id="turnTheLight"></span>
+		</header>
+
+		<div id="bcid">
+			<!--盛放扫描控件的div-->
+		</div>
+
+		<div class="mui-bar mui-bar-footer" style="padding: 0px;">
+			<div class="fbt" id="scanGaleryBtn">从相册选择二维码</div>
+			<div class="fbt mui-action-back">取　 消</div>
+		</div>
+
+		<script type="text/javascript">
+			var height = window.innerHeight - 88 + 'px'; //获取页面实际高度  
+			var width = window.innerWidth + 'px';
+			document.getElementById("bcid").style.height = height;
+			document.getElementById("bcid").style.width = width;
+			scan = null; //扫描对象  
+			mui.plusReady(function() { //通过mui初始化扫描
+				mui.init();
+				startRecognize();
+
+				document.getElementById("scanGaleryBtn").addEventListener("tap", function() {
+					plus.gallery.pick(function(path) {
+						plus.barcode.scan(path, onmarked, function(error) {
+							plus.nativeUI.alert("无法识别此图片");
+						});
+					}, function(err) {
+						plus.nativeUI.alert("Failed: " + err.message);
+					});
+				})
+			});
+
+			function startRecognize() { //开启扫描
+				//alert(123);
+				try {
+					var filter;
+					//自定义的扫描控件样式  
+					var styles = {
+						frameColor: "#29E52C",
+						scanbarColor: "#29E52C",
+						background: ""
+					}
+					//扫描控件构造  
+					scan = new plus.barcode.Barcode('bcid', filter, styles);
+					scan.onmarked = onmarked;
+					scan.onerror = onerror; //扫描错误
+					scan.start();
+					//打开关闭闪光灯处理  
+					var flag = false;
+					document.getElementById("turnTheLight").addEventListener('tap', function() {
+						if (flag == false) {
+							scan.setFlash(true);
+							flag = true;
+						} else {
+							scan.setFlash(false);
+							flag = false;
+						}
+					});
+				} catch (e) {
+					alert("出现错误啦:\n" + e);
+				}
+			};
+
+			function onerror(e) { //错误弹框
+				alert(e);
+			};
+
+			function onmarked(type, result) { //这个是扫描二维码的回调函数，type是扫描二维码回调的类型
+				var text = '';
+				switch (type) { //QR,EAN13,EAN8都是二维码的一种编码格式,result是返回的结果
+					case plus.barcode.QR:
+						text = 'QR: ';
+						break;
+					case plus.barcode.EAN13:
+						text = 'EAN13: ';
+						break;
+					case plus.barcode.EAN8:
+						text = 'EAN8: ';
+						break;
+				}
+
+				var userInfo = app.getGlobalUserInfo();
+				mui.ajax(app.baseUrl() + "searchUser?username=" + userInfo.username +
+					"&friendUsername=" + result, {
+						data: {},
+						crossDomain: true,
+						dataType: 'json', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 3000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						success: function(data) {
+							if (data.code == 200) {
+								mui.openWindow({
+									url: "addFriend.html",
+									id: "addFriend",
+									createNew: true,
+									extras: {
+										userInfo: data.data
+									}
+								});
+							} else {
+								app.showToast(data.msg);
+							}
+
+						},
+						error: function() {
+							app.showToast("出现了一点儿小问题~~");
+						}
+					});
+
+
+			};
+		</script>
+	</body>
+</html>

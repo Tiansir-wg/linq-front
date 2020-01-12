@@ -1,0 +1,196 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<!-- <link href="../css/mui.css" rel="stylesheet" /> -->
+
+		<link href="../css/registLogin/main.css" rel="stylesheet" />
+		<link href="../css/registLogin/util.css" rel="stylesheet" />
+		<style>
+			.p-t-85 {
+			padding-top: 10px;
+			}
+
+			.p-b-70 {
+			padding-bottom: 35px;
+			}
+
+			.m-t-85 {
+			margin-top: 15px;
+			}
+
+			.container-login100 {
+			padding: 25px;
+			}
+
+			/*toast信息提示*/
+
+			.mui-toast-container {
+			bottom: 50% !important;
+			}
+
+			.mui-toast-message {
+			opacity: 0.6;
+			color: #fff;
+			width: 180px;
+			padding: 70px 5px 10px 5px;
+			}
+
+		</style>
+
+	</head>
+	<body>
+
+		<div class="mui-content">
+			<div class="container-login100">
+				<div class="wrap-login100 p-t-85 p-b-20">
+					<form id="userform">
+						<span class="login100-form-title p-b-70">
+							<h5>LinQ</h5>
+						</span>
+						<span class="login100-form-avatar">
+							<img id="img_login_face" src="../images/night_thumb.jpg" alt="">
+						</span>
+
+						<div class="wrap-input100 validate-input m-t-85 m-b-35">
+							<input class="input100" type="text" id="username" name="username" placeholder="用户名">
+							<span class="focus-input100"></span>
+						</div>
+
+						<div class="wrap-input100 validate-input m-b-50">
+							<input class="input100" type="password" id="userpassword" name="password" placeholder="密码">
+							<span class="focus-input100"></span>
+						</div>
+						<div class="container-login100-form-btn">
+							<button type="submit" id="registOrLogin" class="login100-form-btn">
+								登录/注册
+							</button>
+						</div>
+					</form>
+
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.js" type="text/javascript"></script>
+		<script src="../js/util.js" type="text/javascript"></script>
+		<script>
+			mui.plusReady(function() {
+
+				//  设置沉浸式状态栏
+				app.statusBarInit("#FFFFFF")
+
+				// 通过从缓存中获取用户信息判断用户是否登录过，如果登陆过直接跳转
+				var userInfo = app.getGlobalUserInfo();
+				if (userInfo != null && app.isNotNull(userInfo.username)) {
+					mui.openWindow("../index.html", "index");
+				}
+
+				var userform = document.getElementById("userform");
+				var username = document.getElementById("username");
+				var userpassword = document.getElementById("userpassword");
+
+				userform.addEventListener("submit", function(e) {
+					// 判断用户名是否为空，如果为空则让其获得焦点
+					if (!app.isNotNull(username.value)) {
+						// 获取焦点
+						username.focus();
+						app.showToast("用户名不能为空", "close-circle");
+
+						return false;
+					} else if (!app.isNotNull(userpassword.value)) {
+						// 获取焦点
+						userpassword.focus();
+						app.showToast("密码不能为空", "close-circle");
+
+						return false;
+					} else {
+						// 判断用户名和密码的长度，进行限制
+						if (username.value.length > 10) {
+							app.showToast("用户名长度不能超过10", "close-circle");
+							return false;
+						} else if (userpassword.value.length > 12) {
+							app.showToast("密码长度不能超过12", "close-circle");
+							return false;
+						}
+
+
+					}
+					var params = {
+						"username": username.value,
+						"password": userpassword.value
+					}
+
+					console.log(app.baseUrl() + "registerOrLogin");
+					mui.ajax(app.baseUrl() + "registerOrLogin", {
+						data: params,
+						crossDomain: true,
+						dataType: 'json', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 3000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						success: function(data) {
+
+							username.blur();
+							userpassword.blur();
+							if (data.code == 200) {
+								// 保存用户的全局信息
+								app.saveGlobalUserInfo(data.data);
+								mui.openWindow({
+									url:"../index.html",
+									id:"../index.html",
+									createNew:true
+								});
+
+								// 登录成功后请求后台更新好友列表并设置到全局对象里面
+								fetchContacts();
+							} else {
+								app.showToast(data.msg, "error");
+							}
+
+							fetchContacts();
+						},
+						error: function() {
+							//alert()
+							app.showToast("出了一点儿小问题~~", "close-circle");
+						}
+					});
+					// 阻止默认表单提交
+
+					e.preventDefault();
+				});
+			});
+
+			function fetchContacts(username) {
+				mui.ajax(app.baseUrl() + "getFriendList?username=" + app.getGlobalUserInfo().username, {
+					data: {},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					success: function(data) {
+						//服务器返回响应，根据响应结果，分析是否登录成功；
+
+						var friends = data.data;
+
+						app.setContactList(friends);
+						
+						//alert(JSON.stringify(app.getContactList()));
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						app.showToast("出了一点问题", "close-circle");
+					}
+				});
+			}
+		</script>
+	</body>
+
+
+</html>

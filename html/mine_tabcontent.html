@@ -1,0 +1,200 @@
+<!-- 我的  -->
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="../css/common.css" rel="stylesheet" />
+		<link href="../css/iconfont.css" rel="stylesheet">
+		<style>
+			.list_item_label {
+				display: inline-block;
+				height: 30px;
+				line-height: 30px;
+			}
+
+			.list-item {
+				padding: 10px 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="mui-content">
+			<div class="mui-card" style="margin:0px;">
+				<!--页眉，放置标题-->
+				<div class="mui-card-header" style="flex-direction: row-reverse;">
+					<span id="xiangji" class="mui-icon iconfont icon-xiangji" style="padding-right: 10px;"></span>
+				</div>
+				<!--内容区-->
+				<div class="mui-card-content" style="padding:0px 10px;">
+					<div style="height:100px;display: flex;" id="selfinfo_card">
+						<div style="width:20%;height:100%;text-align:center;padding-top: 3%;">
+							<img src="" id="user_face_sm_img" style="height:65px;width:65px;box-shadow: 1px 1px 5px #000000;" />
+						</div>
+						<div style="width:60%;height:100%;padding-top:15px;padding-left: 20px;">
+							<h5 style="font-size:20px;" id="nickname"></h5>
+							<h5 style="display: inline-block;margin-top: 10px;;">微信号</h5>:<h6 style="display: inline-block;" id="username">
+							</h6>
+						</div>
+						<div style="width:20%;height:100%;padding-top:50px;">
+							<span class="mui-icon iconfont icon-erweima"></span>
+							&nbsp;&nbsp;
+							<span class="mui-icon mui-icon-forward"></span>
+						</div>
+					</div>
+				</div>
+				<!--页脚，放置补充信息或支持的操作-->
+				<!-- <div class="mui-card-footer"></div> -->
+			</div>
+
+			<ul class="mui-table-view" style="margin-top:10px;">
+
+				<li class="mui-table-view-cell" style="height:45px;" id="paypal">
+					<a class="mui-navigate-right">
+						<span class="mui-icon iconfont icon-weixinzhifu1 mui-pull-left" style="font-size:25px;color:green"></span>
+						&nbsp;&nbsp;支付</a>
+				</li>
+
+			</ul>
+
+			<ul class="mui-table-view" style="margin-top: 10px;">
+
+				<li class="mui-table-view-cell" style="height:45px;" id="favorite">
+					<a class="mui-navigate-right">
+						<span class="mui-icon iconfont icon-favorite mui-pull-left" style="font-size:25px;color:coral"></span>
+						&nbsp;&nbsp;收藏</a>
+				</li>
+
+				<li class="mui-table-view-cell" style="height:45px;" id="gallery">
+					<a class="mui-navigate-right">
+						<span class="mui-icon iconfont icon-xiangce mui-pull-left" style="font-size:25px;color:royalblue"></span>
+						&nbsp;&nbsp;相册</a>
+				</li>
+
+				<li class="mui-table-view-cell" style="height:45px;" id="card">
+					<a class="mui-navigate-right">
+						<span class="mui-icon iconfont icon-qiabao mui-pull-left" style="font-size:25px;color:blueviolet"></span>
+						&nbsp;&nbsp;卡包</a>
+				</li>
+
+				<li class="mui-table-view-cell" style="height:45px;" id="emoge">
+					<a class="mui-navigate-right">
+						<span class="mui-icon iconfont icon-xiangce mui-pull-left" style="font-size:25px;color:orangered"></span>
+						&nbsp;&nbsp;表情</a>
+				</li>
+
+			</ul>
+
+			<ul class="mui-table-view" style="margin-top:10px;">
+
+				<li class="mui-table-view-cell" style="height:45px;" id="setting">
+					<a class="mui-navigate-right">
+						<span class="mui-icon iconfont icon-shezhi mui-pull-left" style="font-size:25px;color:cadetblue"></span>
+						&nbsp;&nbsp;设置</a>
+				</li>
+
+			</ul>
+
+			<ul class="mui-table-view" style="margin-top:10px;">
+
+				<li class="mui-table-view-cell" style="height:45px;text-align: center;" id="logoutBtn">
+					退出登录
+				</li>
+
+			</ul>
+
+
+
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/util.js"></script>
+		<script>
+			mui.init();
+
+
+
+			mui.plusReady(function() {
+
+				var user_face_sm_img_dom = document.getElementById("user_face_sm_img");
+
+				var username_dom = document.getElementById("username");
+
+				var nickname_dom = document.getElementById("nickname");
+
+				var userInfo = app.getGlobalUserInfo();
+
+				//alert(userInfo.username + userInfo.nickname + userInfo.userFaceSmImg) ;
+
+
+				if (userInfo != null) {
+					console.log(app.imgServerUrl + userInfo.faceimg_sm)
+					user_face_sm_img_dom.src = app.imgServerUrl + userInfo.faceimg_sm;
+					username_dom.innerHTML = userInfo.username;
+					nickname_dom.innerHTML = userInfo.nickname;
+				}
+
+				// 拍照
+				mui(".mui-card-header").on('tap', '#xiangji', function() {
+					app.capturePicture(1);
+				});
+
+				// 退出
+				mui("ul").on("tap", "#logoutBtn", function() {
+					mui.confirm('你将会退出登录', '退出', ['取消', '确认'], function(e) {
+						console.log("--------"+e.index);
+						// 不退出
+						if (e.index == 0) {
+							return false;
+						} else {
+							app.removeGlobalUserInfo();
+							app.removeContactList();
+							mui.openWindow({
+								url: "login.html",
+								id: "login"
+							});
+						}
+					})
+				});
+
+				// 点击个人信息卡片进入个人信息设置
+				mui(".mui-card-content").on("tap", "#selfinfo_card", function() {
+					mui.openWindow("self_info_detail.html", "self_info_detail");
+				});
+				
+				// 支付
+				document.getElementById("paypal").addEventListener("tap",function(){
+					app.showToast("敬请期待~~","ok");
+				});
+				
+				// 收藏
+				document.getElementById("favorite").addEventListener("tap",function(){
+					app.showToast("敬请期待~~","ok");
+				});
+				
+				// 相册
+				document.getElementById("gallery").addEventListener("tap",function(){
+					app.showToast("敬请期待~~","ok");
+				});
+				
+				// 卡包
+				document.getElementById("card").addEventListener("tap",function(){
+					app.showToast("敬请期待~~","ok");
+				});
+				
+				// 表情
+				document.getElementById("emoge").addEventListener("tap",function(){
+					app.showToast("敬请期待~~","ok");
+				});
+				
+				// 设置
+				document.getElementById("setting").addEventListener("tap",function(){
+					app.showToast("敬请期待~~","ok");
+				})
+			})
+		</script>
+	</body>
+
+</html>

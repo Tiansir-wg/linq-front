@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="../css/common.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<!-- 顶部 -->
+		<header class="mui-bar mui-bar-nav bgcolor_red">
+			<h1 class="mui-title fontcolor_white" style="text-align: left;">
+				<span class="mui-action-back mui-icon mui-icon-arrowleft"></span>
+				<label>搜索好友</label>
+			</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-input-row mui-search">
+				<input type="search" class="mui-input-clear" placeholder="" id="searchbox" value="" />
+			</div>
+			<div class="mui-row" style="text-align: center;">
+				<button type="button" class="mui-btn mui-btn-danger mui-btn-outlined" id="searchBtn">搜索</button>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/util.js"></script>
+		<script type="text/javascript">
+			mui.init();
+
+			mui.plusReady(function() {
+
+
+				document.getElementById("searchBtn").addEventListener("tap", function() {
+					var search_value = document.getElementById("searchbox").value;
+					if(!app.isNotNull(search_value)){
+						app.showToast("搜索用户名不能为空");
+						return false;
+					}
+					var userInfo = app.getGlobalUserInfo();
+					mui.ajax(app.baseUrl() + "searchUser?username=" + userInfo.username +
+						"&friendUsername=" + search_value, {
+							data: {},
+							crossDomain: true,
+							dataType: 'json', //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							timeout: 3000, //超时时间设置为10秒；
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							success: function(data) {
+								if (data.code == 200) {
+									mui.openWindow({
+										url: "addFriend.html",
+										id: "addFriend",
+										extras: {
+											userInfo: data.data
+										}
+									});
+								} else {
+									app.showToast(data.msg);
+								}
+
+							},
+							error: function() {
+								app.showToast("出现了一点儿小问题~~");
+							}
+						});
+				})
+			})
+		</script>
+	</body>
+
+</html>

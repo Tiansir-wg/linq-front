@@ -1,0 +1,204 @@
+<!DOCTYPE >
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" href="../css/mui.css" type="text/css" />
+		<link rel="stylesheet" href="../css/iconfont.css" type="text/css" />
+		<style>
+			html {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	height: 100%;
+	background-color: transparent;
+}
+
+.mui-popover .mui-popover-arrow {
+	left: auto;
+	right: 10px !important;
+}
+
+.mui-popover {
+	display: block;
+	width: auto;
+	opacity: 1;
+	text-align: center;
+}
+
+.mui-table-view-cell>a:not(.mui-btn) {
+	color: #000;
+}
+
+.mui-popover .mui-popover-arrow:after {
+	background-color: #333;
+}
+
+		</style>
+	</head>
+
+	<body>
+		<a style="display: block;height: 100%; background:url(../images/touming.jpg);"></a>
+		<div id="topPopover" class="mui-popover" style="position:fixed ;top: 60px;right:5px;">
+			<div class="mui-popover-arrow" style="top: -30px;"></div>
+			<ul class="mui-table-view" style="color: #fff; top: -4px;right: 0;background-color: #333;">
+				<li class="mui-table-view-cell  " style="text-align: left;">
+					<a id="addfriend" href="javascript:;">
+
+						<h5 style="color:white;">
+							<span class="mui-icon iconfont icon-user_add"></span>
+							&nbsp;
+							添加好友
+						</h5>
+					</a>
+				</li>
+				<li class="mui-table-view-cell " style="text-align: left;">
+					<a id="scan" href="javascript:;">
+						<h5 style="color:white;">
+							<span class="mui-icon iconfont icon-saoyisao"></span>
+							&nbsp;
+							扫一扫
+						</h5>
+					</a>
+				</li>
+				<li class="mui-table-view-cell " style="text-align: left;">
+					<a id="paypal" href="javascript:;">
+						<h5 style="color:white;">
+							<span class="mui-icon iconfont icon-shoufukuan"></span>
+							&nbsp;
+							收付款
+						</h5>
+					</a>
+				</li>
+				<li class="mui-table-view-cell " style="text-align: left;">
+					<a id="help" href="javascript:;">
+						<h5 style="color:white;">
+							<span class="mui-icon iconfont icon-bangzhuyufankui"></span>
+							&nbsp;
+							帮助与反馈
+						</h5>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</body>
+
+	<script src="../js/mui.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		mui.init({
+			// preloadPages: [{
+			// 	id: 'tab-webview-main.html',
+			// 	url: 'tab-webview-main.html'
+			// }]
+		});
+
+		mui.plusReady(function() {
+			ws = plus.webview.currentWebview();
+			ws.setStyle({
+				mask: "none"
+			});
+			window.addEventListener("tap", function() {
+				ws.hide();
+			});
+			window.addEventListener("dragstart", function() {
+				ws.hide();
+			});
+
+			addFriend();
+
+			scan()
+
+			paypal();
+
+			help();
+
+		});
+
+
+		/**
+		 * 添加好友
+		 */
+		function addFriend() {
+			mui(".mui-table-view").on("tap", "#addfriend", function(e) {
+
+				// 				e.detail.gesture.preventDefault();
+				// 
+				// 				var selfPage = plus.webview.currentWebview();
+				// 
+				// 				var openerPage = selfPage.opener();
+				// 
+				// 				selfPage.close();
+				// 
+				// 				openerPage.show();
+
+				mui.openWindow({
+					url: "searchFriend.html",
+					id: "searchFriend",
+					createNew: true
+				});
+			})
+		}
+
+		/**
+		 * 扫一扫
+		 */
+		function scan() {
+			mui(".mui-table-view").on("tap", "#scan", function(e) {
+
+				// 				e.detail.gesture.preventDefault();
+				// 
+				// 				var selfPage = plus.webview.currentWebview();
+				// 
+				// 				var openerPage = selfPage.opener();
+				// 
+				// 				selfPage.close();
+				// 
+				// 				openerPage.show();
+				mui.openWindow({
+					url: "qrcodescan.html",
+					id: "qrcodescan",
+					createNew: true
+				});
+			})
+		}
+
+		/**
+		 * 收付款
+		 */
+		function help() {
+			mui(".mui-table-view").on("tap", "#paypal", function(e) {
+
+				e.detail.gesture.preventDefault();
+
+				var selfPage = plus.webview.currentWebview();
+
+				var openerPage = selfPage.opener();
+
+				selfPage.close();
+
+				openerPage.show();
+			})
+		}
+
+		/**
+		 * 帮助与反馈
+		 */
+		function paypal() {
+			mui(".mui-table-view").on("tap", "#help", function(e) {
+
+				e.detail.gesture.preventDefault();
+
+				var selfPage = plus.webview.currentWebview();
+
+				var openerPage = selfPage.opener();
+
+				selfPage.close();
+
+				openerPage.show();
+			})
+		}
+	</script>
+</html>

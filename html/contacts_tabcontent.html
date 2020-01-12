@@ -1,0 +1,88 @@
+<!-- 通讯录   -->
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="../css/common.css" rel="stylesheet" />
+
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<ul class="mui-table-view" id="contact_ul">
+			</ul>
+
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" style="height:60px;padding: 20px 0px;text-align: center;">
+					<h5><span id="total"></span>位联系人</h5>
+				</li>
+			</ul>
+
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/util.js"></script>
+		<script>
+			mui.init();
+
+			mui.plusReady(function() {
+				var friends = app.getContactList();
+				if(!app.isNotNull(friends)){
+					return false;
+				}
+				document.getElementById("total").innerHTML = friends.length;
+
+				var contact_ul = document.getElementById("contact_ul");
+
+				for (var i = 0; i < friends.length; i++) {
+
+					var username = friends[i].username;
+					var nickname = friends[i].nickname;
+					var address = friends[i].address;
+					var imgUrl = app.imgServerUrl + friends[i].faceimg_sm;
+
+					var li = document.createElement("li");
+					li.classList = "mui-table-view-cell mui-media";
+					li.innerHTML = "<a href=\"javascript:;\" username=\"" + username +
+						"\" nickname=\"" + nickname + "\" imgSm = \"" + imgUrl + "\">\n" +
+						"\t\t\t\t\t\t<img class=\"mui-media-object mui-pull-left\" src=\"" + imgUrl + "\">\n" +
+						"\t\t\t\t\t\t<div class=\"mui-media-body\">\n" +
+						"\t\t\t\t\t\t\t<span>" + nickname + "<span>\n" +
+						"\t\t\t\t\t\t\t<p class='mui-ellipsis’>" + address + "</p>\n" +
+						"\t\t\t\t\t\t</div>\n" +
+						"\t\t\t\t\t</a>";
+					contact_ul.appendChild(li);
+
+				}
+				goToFriendDetails();
+			})
+
+			function goToFriendDetails() {
+				mui("ul").on("tap", "a", function() {
+					var username = this.getAttribute("username");
+
+					var nickname = this.getAttribute("nickname");
+
+					var imgSm = this.getAttribute("imgSm");
+
+					mui.openWindow({
+						url: "chatting.html",
+						id: "chatting-" + username,
+						extras: {
+							friendUserId: username,
+							friendNickname: nickname,
+							friendFaceImage: imgSm
+						}
+					});
+					// 渲染快照列表进行展示
+					app.loadingChatSnapshot();
+
+				})
+			}
+		</script>
+	</body>
+
+</html>

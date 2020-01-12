@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="../css/common.css" rel="stylesheet" />
+
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav bgcolor_red">
+			<h1 class="mui-title fontcolor_white" style="text-align: left;">
+				<span class="mui-action-back mui-icon mui-icon-arrowleft"></span>
+				<label>更改名字</label>
+			</h1>
+			<button type="button" class="mui-btn" style="float: right;right:0px;padding:5px;" disabled="true" id="saveBtn">保存</button>
+			<div style="clear:both;"></div>
+		</header>
+		<div class="mui-content">
+			<form class="mui-input-group" action="#" style="border:none;">
+				<div class="mui-input-row" style="height:50px;border:none;">
+					<input type="text" class="mui-input-clear" id="oldnickname" style="height:30px;margin: 10px 10px;border-bottom: 1px solid #C14F4F;">
+				</div>
+			</form>
+		</div>
+
+		<script src="../js/mui.js"></script>
+		<script src="../js/util.js"></script>
+		<script>
+			mui.init();
+
+			mui.plusReady(function() {
+				var userInfo = app.getGlobalUserInfo();
+				document.getElementById("oldnickname").value = userInfo.nickname;
+
+				document.getElementById("oldnickname").addEventListener("change", function() {
+					document.getElementById("saveBtn").disabled = false;
+				})
+
+				document.getElementById("saveBtn").addEventListener("tap", function() {
+					var userInfo = app.getGlobalUserInfo();
+					mui.ajax(app.baseUrl() + "update", {
+
+						data: {
+							username: userInfo.username,
+							nickname: document.getElementById("oldnickname").value
+						},
+						crossDomain: true,
+						dataType: 'json', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 3000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						success: function(data) {
+							app.saveGlobalUserInfo(data.data);
+							var mine_tabcontentwebview = plus.webview.getWebviewById("mine_tabcontent.html");
+							mui.fire(mine_tabcontentwebview, "refresh");
+
+							var self_info_detailwebview = plus.webview.getWebviewById("self_info_detail");
+							mui.fire(self_info_detailwebview, "refresh");
+
+							var index = plus.webview.getWebviewById("../index.html");
+							mui.fire(self_info_detailwebview, "refresh");
+
+							mui.openWindow("self_info_detail.html", "self_info_detail");
+						},
+						error: function() {
+							//alert()
+							app.showToast("出了一点儿小问题~~", "close-circle");
+						}
+					});
+				})
+
+			})
+		</script>
+
+	</body>
+
+</html>

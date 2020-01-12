@@ -1,0 +1,29 @@
+html {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	height: 100%;
+	background-color: transparent;
+}
+
+.mui-popover .mui-popover-arrow {
+	left: auto;
+	right: 10px !important;
+}
+
+.mui-popover {
+	display: block;
+	width: auto;
+	opacity: 1;
+	text-align: center;
+}
+
+.mui-table-view-cell>a:not(.mui-btn) {
+	color: #000;
+}
+
+.mui-popover .mui-popover-arrow:after {
+	background-color: #333;
+}

@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="../css/iconfont.css" rel="stylesheet" />
+		<link href="../css/common.css" rel="stylesheet" />
+
+		<style>
+			.mui-card-header:after,
+			.mui-card-footer:before {
+				transform: scaleY(0) !important;
+			}
+		</style>
+
+
+
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav bgcolor_red">
+			<h1 class="mui-title fontcolor_white" style="text-align: left;">
+				<span class="mui-action-back mui-icon mui-icon-arrowleft"></span>
+				<label>二维码名片</label>
+			</h1>
+			<span class="mui-icon iconfont" style="color:white;float: right;right:0px;" id="shengluehao">&#xe637;</span>
+			<div style="clear:both;"></div>
+		</header>
+		<div class="mui-content">
+			<div class="mui-card" style="margin-top: 30%;">
+				<!--页眉，放置标题-->
+				<div class="mui-card-header mui-card-media">
+					<img src="" style="height:35px;width:35px;" alt="暂无图像" id="myfaceimg" />
+					<div class="mui-media-body">
+						<label id="nickname">昵称</label>
+						<p id="address">地点</p>
+					</div>
+				</div>
+				<!--内容区-->
+				<div class="mui-card-content" style="height:300px;">
+					<img id="qrcode" alt="暂无二维码名片" src="" style="height:290px;width:80%;margin: 5px 10%;" />
+				</div>
+				<!--页脚，放置补充信息或支持的操作-->
+				<div class="mui-card-footer">
+					<h6 style="margin: 5px auto;">扫一扫上面的二维码图案加我linq<h6>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/util.js"></script>
+		<script>
+			mui.init();
+			mui.plusReady(function() {
+				var userInfo = app.getGlobalUserInfo();
+				document.getElementById("nickname").innerHTML = userInfo.nickname;
+				document.getElementById("address").innerHTML = userInfo.address;
+				document.getElementById("myfaceimg").src = app.imgServerUrl + userInfo.faceimg_sm;
+				//console.log(app.imgServerUrl + userInfo.qrcode);
+				document.getElementById("qrcode").src = app.imgServerUrl + userInfo.qrcode;
+			})
+		</script>
+	</body>
+
+</html>
